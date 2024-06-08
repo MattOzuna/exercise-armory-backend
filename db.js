@@ -1,6 +1,6 @@
 /** Database setup for jobly. */
-import { Client } from "pg";
-import { getDatabaseUri } from "./config";
+const {Client} = require("pg");
+const { getDatabaseUri } = require("./config");
 
 let db;
 
@@ -19,4 +19,4 @@ if (process.env.NODE_ENV === "production") {
 
 db.connect();
 
-export default db;
+module.exports = db;
