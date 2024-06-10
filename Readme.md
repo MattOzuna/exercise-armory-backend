@@ -16,17 +16,7 @@ This is the backend component of the Exercise Armory project. It provides the AP
     npm install
     ```
 
-3. Set up the environment variables:
-
-    - Create a `.env` file in the root directory.
-    - Add the following variables:
-
-      ```plaintext
-      PORT=3000
-      DATABASE_URL=postgresql:///exercise_armory
-      ```
-
-4. Start the server:
+3. Start the server:
 
     ```bash
     npm start
