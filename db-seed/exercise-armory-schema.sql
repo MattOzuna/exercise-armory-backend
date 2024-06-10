@@ -2,9 +2,10 @@ CREATE TABLE exercises (
     id SERIAL PRIMARY KEY,
     body_part TEXT NOT NULL,
     equipment TEXT NOT NULL,
-    name VARCHAR(255) NOT NULL,
+    gif_url TEXT NOT NULL,
+    name TEXT NOT NULL,
     target TEXT NOT NULL,
-    secondary_target TEXT[],
+    secondary_muscles TEXT[],
     instructions TEXT[] NOT NULL
 );
 
