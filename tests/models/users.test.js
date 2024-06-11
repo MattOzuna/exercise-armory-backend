@@ -65,11 +65,12 @@ describe("register", function () {
       lastName: "U3L",
       email: "u3@email.com",
     });
-    expect(user).toEqual({
+    expect(user).toMatchObject({
       username: "u3",
       firstName: "U3F",
       lastName: "U3L",
       email: "u3@email.com",
+      isAdmin: false,
     });
   });
   it("throws error if username taken", async function () {

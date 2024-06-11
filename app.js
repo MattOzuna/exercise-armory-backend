@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const { NotFoundError } = require("./expressError"); //importing the custom error classes
 
 const exercisesRouter = require("./routes/exercises");
+const authRouter = require("./routes/auth");
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 
 app.use("/exercises", exercisesRouter);
+app.use("/auth", authRouter);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
