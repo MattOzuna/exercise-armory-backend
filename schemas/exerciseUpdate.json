@@ -1,0 +1,52 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://exercise_armory.com/exerciseUpdate.json",
+    "title": "Root Schema",
+    "type": "object",
+    "default": {},
+    "properties": {
+        "bodyPart": {
+            "title": "The bodyPart Schema",
+            "type": "string",
+            "default": ""
+        },
+        "equipment": {
+            "title": "The equipment Schema",
+            "type": "string",
+            "default": ""
+        },
+        "gifUrl": {
+            "title": "The gifUrl Schema",
+            "type": "string",
+            "default": ""
+        },
+        "name": {
+            "title": "The name Schema",
+            "type": "string",
+            "default": ""
+        },
+        "target": {
+            "title": "The target Schema",
+            "type": "string",
+            "default": ""
+        },
+        "secondaryMuscles": {
+            "title": "The secondaryMuscles Schema",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "A Schema",
+                "type": "string"
+            }
+        },
+        "instructions": {
+            "title": "The instructions Schema",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "A Schema",
+                "type": "string"
+            }
+        }
+    }
+}

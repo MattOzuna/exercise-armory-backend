@@ -2,7 +2,6 @@ const db = require("../db");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 const { BadRequestError, NotFoundError } = require("../expressError");
 
-
 class Exercises {
   //================================================================================================//
   /**
@@ -42,7 +41,7 @@ class Exercises {
       `INSERT INTO exercises
          (name, body_part, equipment, gif_url, target, secondary_muscles, instructions)
          VALUES ($1, $2, $3, $4, $5, $6, $7)
-         RETURNING id, name, body_part, equipment, gif_url, target, secondary_muscles, instructions`,
+         RETURNING id, name, body_part AS "bodyPart", equipment, gif_url AS "gifUrl" , target, secondary_muscles AS "secondaryMuscles", instructions`,
       [
         name,
         bodyPart,
