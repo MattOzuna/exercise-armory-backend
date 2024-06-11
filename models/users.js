@@ -133,6 +133,7 @@ class User {
       data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
     }
 
+    //add updatedAt
     const timeStamp = new Date();
     data.updatedAt = timeStamp;
 

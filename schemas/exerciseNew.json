@@ -3,7 +3,7 @@
     "$id": "http://exercise_armory.com/exerciseNew.json",
     "title": "Root Schema",
     "type": "object",
-    "default": {},
+    "additionalProperties": false,
     "required": [
         "bodyPart",
         "equipment",
@@ -55,6 +55,5 @@
                 "type": "string"
             }
         }
-    },
-    "additionalProperties": false
+    }
 }

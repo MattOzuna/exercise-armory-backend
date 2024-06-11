@@ -3,7 +3,7 @@
     "$id": "http://exercise_armory.com/exerciseUpdate.json",
     "title": "Root Schema",
     "type": "object",
-    "default": {},
+    "additionalProperties": false,
     "properties": {
         "bodyPart": {
             "title": "The bodyPart Schema",

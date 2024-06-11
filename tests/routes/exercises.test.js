@@ -80,7 +80,7 @@ describe("GET /exercises?bodyPart=bodypart", () => {
     const response = await request(app)
       .get("/exercises?body_part=legs")
       .expect(200);
-    
+
     expect(response.body).toMatchObject({
       exercises: [
         {
@@ -95,7 +95,7 @@ describe("GET /exercises?bodyPart=bodypart", () => {
         },
       ],
     });
-  })
+  });
 });
 
 //==========================================================================//
@@ -206,14 +206,11 @@ describe("PATCH /exercises", () => {
     const response = await request(app)
       .patch(`/exercises/${result.rows[0].id}`)
       .send({
-        name: "running",
         bodyPart: "arms",
-        equipment: "none",
-        gifUrl: "running.gif",
         target: "core",
-        secondaryMuscles: ["quads", "hamstrings"],
         instructions: ["test", "jog"],
-      }).expect(200);
+      })
+      .expect(200);
 
     expect(response.body).toMatchObject({
       exercise: {

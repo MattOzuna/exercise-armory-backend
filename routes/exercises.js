@@ -1,7 +1,8 @@
 const express = require("express");
 const jsonschema = require("jsonschema");
 const Exercise = require("../models/exercises");
-const exerciseSchema  = require("../schemas/exerciseNew.json");
+const exerciseNewSchema  = require("../schemas/exerciseNew.json");
+const exerciseUpdateSchema = require("../schemas/exerciseUpdate.json");
 const { BadRequestError } = require("../expressError");
 
 const router = new express.Router();
@@ -45,7 +46,7 @@ router.get("/:id", async function (req, res, next) {
 // POST /exercises => { exercise }
 router.post("/", async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, exerciseSchema);
+    const validator = jsonschema.validate(req.body, exerciseNewSchema);
     if (!validator.valid) {
       const errors = validator.errors.map((error) => error.stack);
       throw new BadRequestError(errors);
@@ -62,7 +63,7 @@ router.post("/", async function (req, res, next) {
 
 router.patch("/:id", async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, exerciseSchema);
+    const validator = jsonschema.validate(req.body, exerciseUpdateSchema);
     if (!validator.valid) {
       const errors = validator.errors.map((error) => error.stack);
       throw new BadRequestError(errors);
