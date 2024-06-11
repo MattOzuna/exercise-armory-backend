@@ -24,11 +24,15 @@ This is the backend component of the Exercise Armory project. It provides the AP
 
 ## API Endpoints
 
+### /exercises
+
 - `GET /exercises`: Get all exercises.
 - `GET /exercises/:id`: Get a specific exercise by ID.
 - `POST /exercises`: Create a new exercise.
 - `PUT /exercises/:id`: Update an existing exercise.
 - `DELETE /exercises/:id`: Delete an exercise.
+
+### /auth
 
 - `POST /auth/register`: Register a new user.
 - `POST /auth/login`: Log in an existing user.
