@@ -30,16 +30,17 @@ This is the backend component of the Exercise Armory project. It provides the AP
 - `PUT /exercises/:id`: Update an existing exercise.
 - `DELETE /exercises/:id`: Delete an exercise.
 
+- `POST /auth/register`: Register a new user.
+- `POST /auth/login`: Log in an existing user.
+
+## Technologies Used
+- Node.js
+- Express.js
+- Postgres
+
+
 ## Technologies Used
 
 - Node.js
 - Express.js
 - Postgres
-
-## Contributing
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).

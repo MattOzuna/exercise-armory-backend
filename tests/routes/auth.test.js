@@ -98,4 +98,46 @@ describe("POST /auth/register", () => {
       ],
     });
   });
+  it("should return a 400 if the request body has an invalid key", async () => {
+    const response = await request(app).post("/auth/register").send({
+      username: "test4",
+      password: "password",
+      firstName: "Test",
+      lastName: "User",
+      email: "test@email.com",
+      test: "test",
+    });
+    expect(response.body.error).toEqual({
+      status: 400,
+      message: [
+        'instance is not allowed to have the additional property "test"',
+      ],
+    });
+  });
+  it("should return a 400 if the username is already taken", async () => {
+    const response = await request(app).post("/auth/register").send({
+      username: "test",
+      password: "password",
+      firstName: "Test",
+      lastName: "User",
+      email: "test@email.com",
+    });
+    expect(response.body.error).toEqual({
+      status: 400,
+      message: "Duplicate username: test",
+    });
+  });
+  it("should return a 400 if the email doesnt have an @", async () => {
+    const response = await request(app).post("/auth/register").send({
+      username: "test5",
+      password: "password",
+      firstName: "Test",
+      lastName: "User",
+      email: "testemail.com",
+    });
+    expect(response.body.error).toEqual({
+      status: 400,
+      message: ["instance.email does not conform to the \"email\" format"],
+    });
+  })
 });

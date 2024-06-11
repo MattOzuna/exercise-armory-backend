@@ -194,6 +194,21 @@ describe("POST /exercises", () => {
   it("should throw a 400 error if the request body is invalid", async () => {
     await request(app).post("/exercises").send({}).expect(400);
   });
+  it("should throw a 400 error if the request body has an invalid key", async () => {
+    await request(app)
+      .post("/exercises")
+      .send({
+        name: "test-test",
+        bodyPart: "chest",
+        equipment: "none",
+        gifUrl: "push-up.gif",
+        target: "strength",
+        secondaryMuscles: ["triceps", "shoulders"],
+        instructions: ["push"],
+        test: "test",
+      })
+      .expect(400);
+  });
 });
 
 //==========================================================================//
@@ -224,6 +239,26 @@ describe("PATCH /exercises", () => {
         instructions: ["test", "jog"],
       },
     });
+  });
+  it("should throw a 400 error if the request body is invalid", async () => {
+    await request(app).patch("/exercises/1").send({}).expect(400);
+  });
+  it("should throw a 404 error if the exercise does not exist", async () => {
+    await request(app)
+      .patch("/exercises/0")
+      .send({ bodyPart: "arms", target: "core", instructions: ["test", "jog"] })
+      .expect(404);
+  });
+  it("should throw a 400 error if the request body has an invalid key", async () => {
+    await request(app)
+      .patch("/exercises/1")
+      .send({
+        bodyPart: "arms",
+        target: "core",
+        instructions: ["test", "jog"],
+        test: "test",
+      })
+      .expect(400);
   });
 });
 //==========================================================================//
