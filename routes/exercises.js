@@ -20,7 +20,7 @@ router.get("/", async function (req, res, next) {
       const exercises = await Exercise.findAll();
       return res.json({ exercises });
     } else {
-      const exercises = await Exercise.search(req.query);
+      const exercises = await Exercise.findAll(req.query);
       return res.json({ exercises });
     }
   } catch (err) {

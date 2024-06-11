@@ -71,13 +71,14 @@ class Exercises {
 
     const { name, bodyPart } = searchFilters;
 
-    if (name) {
-      queryValues.push(`%${name}%`);
-      whereList.push(`name ILIKE $${queryValues.length}`);
-    } else if (bodyPart) {
+    if (bodyPart) {
       queryValues.push(bodyPart);
       whereList.push(`body_part = $${queryValues.length}`);
     }
+    if (name) {
+      queryValues.push(`%${name}%`);
+      whereList.push(`name ILIKE $${queryValues.length}`);
+    } 
     if (whereList.length > 0) {
       query += " WHERE " + whereList.join(" AND ") + " ORDER BY name";
     }

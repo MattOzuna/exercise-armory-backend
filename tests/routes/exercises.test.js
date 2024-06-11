@@ -40,7 +40,101 @@ describe("GET /exercises", () => {
       ],
     });
   });
+});
 
+//==========================================================================//
+
+describe("GET /exercises?name=exerciseName", () => {
+  it("should return a list of exercises with the specified name", async () => {
+    const result = await db.query(
+      "SELECT id FROM exercises WHERE name='running'"
+    );
+    const response = await request(app)
+      .get("/exercises?name=running")
+      .expect(200);
+
+    expect(response.body).toMatchObject({
+      exercises: [
+        {
+          id: result.rows[0].id,
+          name: "running",
+          body_part: "legs",
+          equipment: "none",
+          gif_url: "running.gif",
+          target: "cardio",
+          secondary_muscles: ["quads", "hamstrings"],
+          instructions: ["run"],
+        },
+      ],
+    });
+  });
+});
+
+//==========================================================================//
+
+describe("GET /exercises?bodyPart=bodypart", () => {
+  it("should return a list of exercises with the specified body part", async () => {
+    const result = await db.query(
+      "SELECT id FROM exercises WHERE name='running'"
+    );
+    const response = await request(app)
+      .get("/exercises?body_part=legs")
+      .expect(200);
+    
+    expect(response.body).toMatchObject({
+      exercises: [
+        {
+          id: result.rows[0].id,
+          name: "running",
+          body_part: "legs",
+          equipment: "none",
+          gif_url: "running.gif",
+          target: "cardio",
+          secondary_muscles: ["quads", "hamstrings"],
+          instructions: ["run"],
+        },
+      ],
+    });
+  })
+});
+
+//==========================================================================//
+
+describe("GET /exercises?name=exerciseName&bodyPart=bodypart", () => {
+  it("should return a list of exercises with the specified name and body part", async () => {
+    const result = await db.query(
+      "SELECT id FROM exercises WHERE name='running'"
+    );
+
+    await db.query(`
+      INSERT INTO exercises (name, body_part, equipment, gif_url, target, secondary_muscles, instructions)
+      VALUES ('runningv2', 'arms', 'none', 'running.gif', 'cardio', '{quads, hamstrings}', '{run}')
+    `);
+
+    const response = await request(app)
+      .get("/exercises?name=running&bodyPart=legs")
+      .expect(200);
+
+    expect(response.body).toMatchObject({
+      exercises: [
+        {
+          id: result.rows[0].id,
+          name: "running",
+          body_part: "legs",
+          equipment: "none",
+          gif_url: "running.gif",
+          target: "cardio",
+          secondary_muscles: ["quads", "hamstrings"],
+          instructions: ["run"],
+        },
+      ],
+    });
+  });
+});
+
+//==========================================================================//
+
+describe("GET /exercises/id", () => {
   it("should return a single exercise", async () => {
     const result = await db.query(
       "SELECT id FROM exercises WHERE name='running'"
