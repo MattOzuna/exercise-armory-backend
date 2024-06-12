@@ -3,7 +3,6 @@
 This is the backend component of the Exercise Armory project. It provides the API endpoints for managing exercises.
 
 ## Installation
-
 1. Clone the repository:
 
     ```bash
@@ -23,9 +22,7 @@ This is the backend component of the Exercise Armory project. It provides the AP
     ```
 
 ## API Endpoints
-
 ### /exercises
-
 - `GET /exercises`: Get all exercises.
 - `GET /exercises/:id`: Get a specific exercise by ID.
 - `POST /exercises`: Create a new exercise.
@@ -33,18 +30,17 @@ This is the backend component of the Exercise Armory project. It provides the AP
 - `DELETE /exercises/:id`: Delete an exercise.
 
 ### /auth
-
 - `POST /auth/register`: Register a new user.
 - `POST /auth/login`: Log in an existing user.
 
+### /users
+- `GET /users`: Get all users.
+- `GET /users/:id`: Get a specific user by ID.
+- `POST /users`: Create a new user.
+- `PUT /users/:id`: Update an existing user.
+- `DELETE /users/:id`: Delete a user.
+
 ## Technologies Used
-- Node.js
-- Express.js
-- Postgres
-
-
-## Technologies Used
-
 - Node.js
 - Express.js
 - Postgres
