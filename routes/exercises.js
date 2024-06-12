@@ -1,9 +1,10 @@
 const express = require("express");
 const jsonschema = require("jsonschema");
 const Exercise = require("../models/exercises");
-const exerciseNewSchema  = require("../schemas/exerciseNew.json");
+const exerciseNewSchema = require("../schemas/exerciseNew.json");
 const exerciseUpdateSchema = require("../schemas/exerciseUpdate.json");
 const { BadRequestError } = require("../expressError");
+const { ensureLoggedIn, ensureAdmin } = require("../middleware/auth");
 
 const router = new express.Router();
 
@@ -15,7 +16,7 @@ const router = new express.Router();
 // GET /exercises?bodyPart=exerciseCategory&name=exerciseName
 //
 // => { exercises: [ { id, name, bodyPart, equipment, gifUrl, target, secondaryMuscles, instructions }, ...] }
-router.get("/", async function (req, res, next) {
+router.get("/", ensureLoggedIn, async function (req, res, next) {
   try {
     if (Object.keys(req.query).length === 0) {
       const exercises = await Exercise.findAll();
@@ -32,7 +33,7 @@ router.get("/", async function (req, res, next) {
 //==========================================================================//
 
 // GET /exercises/:id => { exercise }
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", ensureLoggedIn, async function (req, res, next) {
   try {
     const exercise = await Exercise.findById(req.params.id);
     return res.json({ exercise });
@@ -44,7 +45,7 @@ router.get("/:id", async function (req, res, next) {
 //==========================================================================//
 
 // POST /exercises => { exercise }
-router.post("/", async function (req, res, next) {
+router.post("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, exerciseNewSchema);
     if (!validator.valid) {
@@ -61,31 +62,41 @@ router.post("/", async function (req, res, next) {
 
 //==========================================================================//
 
-router.patch("/:id", async function (req, res, next) {
-  try {
-    const validator = jsonschema.validate(req.body, exerciseUpdateSchema);
-    if (!validator.valid) {
-      const errors = validator.errors.map((error) => error.stack);
-      throw new BadRequestError(errors);
-    }
+router.patch(
+  "/:id",
+  ensureLoggedIn,
+  ensureAdmin,
+  async function (req, res, next) {
+    try {
+      const validator = jsonschema.validate(req.body, exerciseUpdateSchema);
+      if (!validator.valid) {
+        const errors = validator.errors.map((error) => error.stack);
+        throw new BadRequestError(errors);
+      }
 
-    const exercise = await Exercise.update(req.params.id, req.body);
-    return res.json({ exercise });
-  } catch (err) {
-    return next(err);
+      const exercise = await Exercise.update(req.params.id, req.body);
+      return res.json({ exercise });
+    } catch (err) {
+      return next(err);
+    }
   }
-});
+);
 
 //==========================================================================//
 
 // Delete /exercises/:id => { deleted: id }
-router.delete("/:id", async function (req, res, next) {
-  try {
-    await Exercise.delete(req.params.id);
-    return res.json({ deleted: req.params.id });
-  } catch (err) {
-    return next(err);
+router.delete(
+  "/:id",
+  ensureLoggedIn,
+  ensureAdmin,
+  async function (req, res, next) {
+    try {
+      await Exercise.delete(req.params.id);
+      return res.json({ deleted: req.params.id });
+    } catch (err) {
+      return next(err);
+    }
   }
-});
+);
 
 module.exports = router;

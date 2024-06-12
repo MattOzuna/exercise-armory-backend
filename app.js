@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 
-const { NotFoundError } = require("./expressError"); //importing the custom error classes
+const { NotFoundError } = require("./expressError");
+const { authenticateJWT } = require("./middleware/auth");
 
 const exercisesRouter = require("./routes/exercises");
 const authRouter = require("./routes/auth");
@@ -13,6 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use(authenticateJWT);
 
 app.use("/exercises", exercisesRouter);
 app.use("/auth", authRouter);
