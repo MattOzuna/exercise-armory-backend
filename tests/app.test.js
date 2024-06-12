@@ -1,5 +1,5 @@
 const request = require("supertest");
-
+const db = require("../db");
 const app = require("../app");
 
 test("not found for site 404", async function () {
@@ -14,3 +14,6 @@ test("not found for site 404 (test stack print)", async function () {
   delete process.env.NODE_ENV;
 });
 
+afterAll(function () {
+  db.end();
+});
