@@ -10,6 +10,7 @@ beforeAll(async () => {
     firstName: "Test",
     lastName: "User",
     email: "test@email.com",
+    isAdmin: false,
   });
 });
 

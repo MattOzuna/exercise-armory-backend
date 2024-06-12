@@ -9,7 +9,6 @@ const {
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
-
 class User {
   /**
    * Authenticate user with username and password.
@@ -49,7 +48,14 @@ class User {
    * @returns {Object} - user data
    * @throws {BadRequestError} - on duplicates
    */
-  static async register({ username, password, firstName, lastName, email }) {
+  static async register({
+    username,
+    password,
+    firstName,
+    lastName,
+    email,
+    isAdmin=false,
+  }) {
     const duplicateCheck = await db.query(
       `SELECT username
            FROM users
@@ -69,10 +75,11 @@ class User {
             password,
             first_name,
             last_name,
-            email)
-           VALUES ($1, $2, $3, $4, $5)
+            email,
+            is_admin)
+           VALUES ($1, $2, $3, $4, $5, $6)
            RETURNING username, first_name AS "firstName", last_name AS "lastName", email, created_at AS "createdAt", is_admin AS "isAdmin"`,
-      [username, hashedPassword, firstName, lastName, email]
+      [username, hashedPassword, firstName, lastName, email, isAdmin]
     );
 
     const user = result.rows[0];
@@ -126,7 +133,8 @@ class User {
    * update user by username
    * @param {string} username
    * @param {object} data
-   * @returns
+   * @returns {object} - { username, firstName, lastName, email }
+   * @throws {NotFoundError} - if not found
    */
   static async update(username, data) {
     if (data.password) {
