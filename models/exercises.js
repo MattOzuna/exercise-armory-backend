@@ -64,7 +64,13 @@ class Exercises {
    *
    */
   static async findAll(searchFilters = {}) {
-    let query = `SELECT id, name, body_part, equipment, gif_url, target, secondary_muscles, instructions
+    let query = `SELECT id, 
+                        name, 
+                        body_part AS "bodyPart", 
+                        equipment, gif_url AS "gifUrl", 
+                        target, 
+                        secondary_muscles AS "secondaryMuscles", 
+                        instructions
              FROM exercises`;
     const whereList = [];
     const queryValues = [];
@@ -78,7 +84,7 @@ class Exercises {
     if (name) {
       queryValues.push(`%${name}%`);
       whereList.push(`name ILIKE $${queryValues.length}`);
-    } 
+    }
     if (whereList.length > 0) {
       query += " WHERE " + whereList.join(" AND ") + " ORDER BY name";
     }
@@ -96,9 +102,16 @@ class Exercises {
    */
   static async findById(id) {
     const result = await db.query(
-      `SELECT id, name, body_part, equipment, gif_url, target, secondary_muscles, instructions
-             FROM exercises
-             WHERE id = $1`,
+      `SELECT id, 
+              name, 
+              body_part AS "bodyPart", 
+              equipment, 
+              gif_url AS "gifUrl", 
+              target, 
+              secondary_muscles AS "secondaryMuscles", 
+              instructions
+        FROM exercises
+        WHERE id = $1`,
       [id]
     );
 

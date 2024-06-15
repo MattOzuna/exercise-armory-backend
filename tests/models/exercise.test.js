@@ -40,8 +40,8 @@ describe("create", () => {
 
     expect(result.rows.length).toBe(1);
     expect(result.rows[0].name).toBe(exerciseData.name);
-    expect(result.rows[0].description).toBe(exerciseData.description);
-    expect(result.rows[0].difficulty).toBe(exerciseData.difficulty);
+    expect(result.rows[0].body_part).toBe(exerciseData.bodyPart);
+    expect(result.rows[0].gif_url).toBe(exerciseData.gifUrl);
   });
   it("should throw BadRequestError if exercise already exists", async () => {
     const exerciseData = {
@@ -94,8 +94,8 @@ describe("findAll", () => {
 
     expect(exercises.length).toBe(1);
     expect(exercises[0].name).toBe(exerciseData.name);
-    expect(exercises[0].description).toBe(exerciseData.description);
-    expect(exercises[0].difficulty).toBe(exerciseData.difficulty);
+    expect(exercises[0].gifUrl).toBe(exerciseData.gifUrl);
+    expect(exercises[0].secondaryMuscles[0]).toBe(exerciseData.secondaryMuscles[0]);
   });
 });
 
@@ -124,8 +124,8 @@ describe("findByBodyPart", () => {
 
     expect(exercises.length).toBe(1);
     expect(exercises[0].name).toBe(exerciseData.name);
-    expect(exercises[0].description).toBe(exerciseData.description);
-    expect(exercises[0].difficulty).toBe(exerciseData.difficulty);
+    expect(exercises[0].bodyPart).toBe(exerciseData.bodyPart);
+    expect(exercises[0].target).toBe(exerciseData.target);
   });
 });
 
@@ -157,8 +157,8 @@ describe("findByBodyPartAndName", () => {
 
     expect(exercises.length).toBe(1);
     expect(exercises[0].name).toBe(exerciseData.name);
-    expect(exercises[0].description).toBe(exerciseData.description);
-    expect(exercises[0].difficulty).toBe(exerciseData.difficulty);
+    expect(exercises[0].instructions[1]).toBe(exerciseData.instructions[1]);
+    expect(exercises[0].equipment).toBe(exerciseData.equipment);
   });
 });
 
@@ -186,8 +186,8 @@ describe("findByName", () => {
     const foundExercise = await Exercises.findAll({ name: "Push-ups" });
 
     expect(foundExercise[0].name).toBe(exerciseData.name);
-    expect(foundExercise[0].description).toBe(exerciseData.description);
-    expect(foundExercise[0].difficulty).toBe(exerciseData.difficulty);
+    expect(foundExercise[0].target).toBe(exerciseData.target);
+    expect(foundExercise[0].gifUrl).toBe(exerciseData.gifUrl);
   });
 });
 
@@ -213,10 +213,11 @@ describe("findById", () => {
 
     //find exercise by id
     const foundExercise = await Exercises.findById(exercise.id);
+    console.log(foundExercise)
 
     expect(foundExercise.name).toBe(exerciseData.name);
-    expect(foundExercise.description).toBe(exerciseData.description);
-    expect(foundExercise.difficulty).toBe(exerciseData.difficulty);
+    expect(foundExercise.gifUrl).toBe(exerciseData.gifUrl);
+    expect(foundExercise.secondaryMuscles[0]).toBe(exerciseData.secondaryMuscles[0]);
   });
   it("should throw NotFoundError if no exercise found", async () => {
     try {
