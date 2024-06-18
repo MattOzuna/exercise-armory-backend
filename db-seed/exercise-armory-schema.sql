@@ -32,7 +32,7 @@ CREATE TABLE workouts (
 CREATE TABLE workouts_exercises (
   workout_id INTEGER REFERENCES workouts(id) ON DELETE CASCADE,
   exercise_id INTEGER REFERENCES exercises(id) ON DELETE CASCADE,
-  sets INTEGER NOT NULL,
-  reps INTEGER NOT NULL,
+  sets INTEGER NOT NULL DEFAULT 1,
+  reps INTEGER NOT NULL DEFAULT 1,
   weight INTEGER
 );
