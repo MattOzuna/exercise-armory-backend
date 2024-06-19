@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://exercise_armory.com/workoutsUpdate.json",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "exercises": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "notes": {
+            "type": "string"
+        }
+    }
+}
