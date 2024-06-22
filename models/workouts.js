@@ -164,7 +164,17 @@ class Workouts {
   }
 
   //===========================================================================//
-
+  /**
+   * Update workout exercise details.
+   * @param {Number} workoutId - workout id
+   * @param {Array} exercisesArr - array of exercise details
+   * @returns {Object} - updated workout data
+   * Example of exercisesArr:
+   * [
+   *  { exerciseId: 1, weight: 100, reps: 10, sets: 3 },
+   * { exerciseId: 2, weight: 50, reps: 12, sets: 4 }
+   * ]
+   */
   static async updateWorkoutExerciseDetails(workoutId, exercisesArr) {
     const WorkoutDetails = {
       workoutId,

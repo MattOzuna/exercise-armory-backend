@@ -61,7 +61,7 @@ router.post("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
 });
 
 //==========================================================================//
-
+// PATCH /exercises/:id => { exercise }
 router.patch(
   "/:id",
   ensureLoggedIn,
