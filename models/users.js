@@ -22,7 +22,8 @@ class User {
                     password,
                     first_name AS "firstName",
                     last_name AS "lastName",
-                    email
+                    email,
+                    is_admin AS "isAdmin"
             FROM users
             WHERE username = $1`,
       [username]
@@ -54,7 +55,7 @@ class User {
     firstName,
     lastName,
     email,
-    isAdmin=false,
+    isAdmin = false,
   }) {
     const duplicateCheck = await db.query(
       `SELECT username
@@ -78,7 +79,12 @@ class User {
             email,
             is_admin)
            VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING username, first_name AS "firstName", last_name AS "lastName", email, created_at AS "createdAt", is_admin AS "isAdmin"`,
+           RETURNING username, 
+                     first_name AS "firstName", 
+                     last_name AS "lastName", 
+                     email, 
+                     created_at AS "createdAt", 
+                     is_admin AS "isAdmin"`,
       [username, hashedPassword, firstName, lastName, email, isAdmin]
     );
 

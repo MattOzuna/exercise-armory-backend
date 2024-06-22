@@ -242,28 +242,38 @@ describe("getAll", function () {
 describe("getOne", function () {
   it("works", async function () {
     const exercise1 = await db.query(
-      `SELECT id, 
-              name, 
-              body_part AS "bodyPart", 
-              equipment, 
-              gif_url AS "gifUrl", 
-              target, 
-              secondary_muscles AS "secondaryMuscles", 
-              instructions 
-            FROM exercises 
-            WHERE name='Push-ups'`
+      `SELECT exercises.id, 
+              exercises.name, 
+              exercises.body_part AS "bodyPart", 
+              exercises.equipment, 
+              exercises.gif_url AS "gifUrl", 
+              exercises.target, 
+              exercises.secondary_muscles AS "secondaryMuscles", 
+              exercises.instructions,
+              workouts_exercises.sets,
+              workouts_exercises.reps,
+              workouts_exercises.weight
+          FROM exercises
+          JOIN workouts_exercises 
+          ON exercises.id = workouts_exercises.exercise_id
+          WHERE exercises.name = 'Push-ups'`
     );
     const exercise2 = await db.query(
-      `SELECT id, 
-              name, 
-              body_part AS "bodyPart", 
-              equipment, 
-              gif_url AS "gifUrl", 
-              target, 
-              secondary_muscles AS "secondaryMuscles", 
-              instructions 
-            FROM exercises 
-            WHERE name='Sit-ups'`
+      `SELECT exercises.id, 
+              exercises.name, 
+              exercises.body_part AS "bodyPart", 
+              exercises.equipment, 
+              exercises.gif_url AS "gifUrl", 
+              exercises.target, 
+              exercises.secondary_muscles AS "secondaryMuscles", 
+              exercises.instructions,
+              workouts_exercises.sets,
+              workouts_exercises.reps,
+              workouts_exercises.weight
+          FROM exercises
+          INNER JOIN workouts_exercises 
+          ON exercises.id = workouts_exercises.exercise_id
+          WHERE exercises.name = 'Sit-ups'`
     );
     const workout = await Workouts.create({
       username: "u1",
@@ -391,6 +401,55 @@ describe("update", function () {
       });
     } catch (err) {
       expect(err.message).toContain("No workout: 0");
+    }
+  });
+});
+
+//================================================================================================//
+
+describe("update workout Details", function () {
+  it("works", async function () {
+    const workout = await Workouts.getAll("u1");
+    const workoutId = workout[1].id;
+
+    const exerciseDetails = workout[1].exercises.map((exercise) => {
+      return {
+        exerciseId: exercise,
+        weight: 50,
+        reps: 10,
+        sets: 3,
+      };
+    });
+
+    const updatedWorkout = await Workouts.updateWorkoutExerciseDetails(
+      workoutId,
+      exerciseDetails
+    );
+
+    expect(updatedWorkout).toEqual({
+      workoutId,
+      exercises: exerciseDetails,
+    });
+  });
+  it("throws error if workout not found", async function () {
+    try {
+      await Workouts.updateWorkoutExerciseDetails(0, [
+        { exerciseId: 1, weight: 50, reps: 10, sets: 3 },
+      ]);
+    } catch (err) {
+      expect(err.message).toContain("No workout: 0");
+    }
+  });
+  it("throws and error if exercise not found", async function () {
+    const workout = await Workouts.getAll("u1");
+    const workoutId = workout[1].id;
+
+    try {
+      await Workouts.updateWorkoutExerciseDetails(workoutId, [
+        { exerciseId: 0 },
+      ]);
+    } catch (err) {
+      expect(err.message).toContain(`No workout: ${workoutId} or exercise: 0`);
     }
   });
 });

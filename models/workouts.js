@@ -82,8 +82,12 @@ class Workouts {
    */
   static async get(id) {
     const result = await db.query(
-      `SELECT id, user_id AS "username", date, exercises, notes
-           FROM workouts
+      `SELECT id, 
+              user_id AS "username", 
+              date, 
+              exercises, 
+              notes
+           FROM workouts 
            WHERE id = $1`,
       [id]
     );
@@ -91,15 +95,26 @@ class Workouts {
 
     if (!workout) throw new NotFoundError(`No workout: ${id}`);
 
-    const exercises = await db.query(`SELECT id, 
-              name, 
-              body_part AS "bodyPart", 
-              equipment, 
-              gif_url AS "gifUrl", 
-              target, 
-              secondary_muscles AS "secondaryMuscles", 
-              instructions FROM exercises WHERE id = ANY ($1)`, [workout.exercises]);
-    
+    const exercises = await db.query(
+      `
+      SELECT exercises.id, 
+              exercises.name, 
+              exercises.body_part AS "bodyPart", 
+              exercises.equipment, 
+              exercises.gif_url AS "gifUrl", 
+              exercises.target, 
+              exercises.secondary_muscles AS "secondaryMuscles", 
+              exercises.instructions,
+              workouts_exercises.sets,
+              workouts_exercises.reps,
+              workouts_exercises.weight
+          FROM workouts_exercises
+          JOIN exercises 
+          ON workouts_exercises.exercise_id = exercises.id
+          WHERE workouts_exercises.workout_id = $1`,
+      [workout.id]
+    );
+
     workout.exercises = exercises.rows;
 
     return workout;
@@ -146,6 +161,40 @@ class Workouts {
     }
 
     return workout;
+  }
+
+  //===========================================================================//
+
+  static async updateWorkoutExerciseDetails(workoutId, exercisesArr) {
+    const WorkoutDetails = {
+      workoutId,
+      exercises: [],
+    };
+
+    for (let exercise of exercisesArr) {
+      const { exerciseId, weight, reps, sets } = exercise;
+
+      const result = await db.query(
+        `UPDATE workouts_exercises
+           SET weight = $1,
+               reps = $2,
+               sets = $3
+           WHERE workout_id = $4
+           AND exercise_id = $5
+           RETURNING exercise_id AS "exerciseId", weight, reps, sets`,
+        [weight, reps, sets, workoutId, exerciseId]
+      );
+      const exerciseDetails = result.rows[0];
+
+      if (!exerciseDetails)
+        throw new NotFoundError(
+          `No workout: ${workoutId} or exercise: ${exerciseId}`
+        );
+      
+      WorkoutDetails.exercises.push(exerciseDetails);
+    }
+
+    return WorkoutDetails;
   }
 
   //===========================================================================//

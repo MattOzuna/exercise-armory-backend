@@ -39,6 +39,7 @@ describe("authenticate", function () {
       firstName: "U1F",
       lastName: "U1L",
       email: "u1@email.com",
+      isAdmin: false,
     });
   });
   it("throws error if user not found", async function () {

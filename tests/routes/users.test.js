@@ -395,42 +395,40 @@ describe("GET /users/:username/workouts/:id", function () {
     const workout = await db.query(
       `SELECT id FROM workouts WHERE user_id = 'testuser1'`
     );
-    const workoutId = workout.rows[0].id;
+    const workoutId = workout.rows[1].id;
 
-    const exercise1 = await db.query(
-      `SELECT id, 
-              name, 
-              body_part AS "bodyPart", 
-              equipment, 
-              gif_url AS "gifUrl", 
-              target, 
-              secondary_muscles AS "secondaryMuscles", 
-              instructions 
-            FROM exercises 
-            WHERE name='Push-ups'`
+    const exercise = await db.query(
+      `
+      SELECT exercises.id, 
+              exercises.name, 
+              exercises.body_part AS "bodyPart", 
+              exercises.equipment, 
+              exercises.gif_url AS "gifUrl", 
+              exercises.target, 
+              exercises.secondary_muscles AS "secondaryMuscles", 
+              exercises.instructions,
+              workouts_exercises.sets,
+              workouts_exercises.reps,
+              workouts_exercises.weight
+          FROM workouts_exercises
+          JOIN exercises 
+          ON workouts_exercises.exercise_id = exercises.id
+          WHERE workouts_exercises.workout_id = $1`,
+      [workoutId]
     );
-    const exercise2 = await db.query(
-      `SELECT id, 
-              name, 
-              body_part AS "bodyPart", 
-              equipment, 
-              gif_url AS "gifUrl", 
-              target, 
-              secondary_muscles AS "secondaryMuscles", 
-              instructions 
-            FROM exercises 
-            WHERE name='Sit-ups'`
-    );
+
+    console.log(exercise.rows);
 
     const response = await request(app)
       .get(`/users/testuser1/workouts/${workoutId}`)
       .set("authorization", `Bearer ${testuser1Token}`);
+    console.log(response.body);
     expect(response.body).toEqual({
       workout: {
         id: workoutId,
         username: "testuser1",
         date: expect.any(String),
-        exercises: [exercise1.rows[0], exercise2.rows[0]],
+        exercises: exercise.rows,
         notes: "test notes",
       },
     });
@@ -440,30 +438,26 @@ describe("GET /users/:username/workouts/:id", function () {
     const workout = await db.query(
       `SELECT id FROM workouts WHERE user_id = 'testuser1'`
     );
-    const workoutId = workout.rows[0].id;
-    const exercise1 = await db.query(
-      `SELECT id, 
-              name, 
-              body_part AS "bodyPart", 
-              equipment, 
-              gif_url AS "gifUrl", 
-              target, 
-              secondary_muscles AS "secondaryMuscles", 
-              instructions 
-            FROM exercises 
-            WHERE name='Push-ups'`
-    );
-    const exercise2 = await db.query(
-      `SELECT id, 
-              name, 
-              body_part AS "bodyPart", 
-              equipment, 
-              gif_url AS "gifUrl", 
-              target, 
-              secondary_muscles AS "secondaryMuscles", 
-              instructions 
-            FROM exercises 
-            WHERE name='Sit-ups'`
+    const workoutId = workout.rows[1].id;
+
+    const exercise = await db.query(
+      `
+      SELECT exercises.id, 
+              exercises.name, 
+              exercises.body_part AS "bodyPart", 
+              exercises.equipment, 
+              exercises.gif_url AS "gifUrl", 
+              exercises.target, 
+              exercises.secondary_muscles AS "secondaryMuscles", 
+              exercises.instructions,
+              workouts_exercises.sets,
+              workouts_exercises.reps,
+              workouts_exercises.weight
+          FROM workouts_exercises
+          JOIN exercises 
+          ON workouts_exercises.exercise_id = exercises.id
+          WHERE workouts_exercises.workout_id = $1`,
+      [workoutId]
     );
 
     const response = await request(app)
@@ -474,12 +468,12 @@ describe("GET /users/:username/workouts/:id", function () {
         id: workoutId,
         username: "testuser1",
         date: expect.any(String),
-        exercises: [exercise1.rows[0], exercise2.rows[0]],
+        exercises: exercise.rows,
         notes: "test notes",
       },
     });
   });
-  
+
   it("unauthorized for non-admin", async function () {
     const workout = await db.query(
       `SELECT id FROM workouts WHERE user_id = 'testuser1'`
@@ -603,6 +597,220 @@ describe("PATCH /users/:username/workouts/:id", function () {
       })
       .set("authorization", `Bearer ${testuser1Token}`);
     expect(response.statusCode).toEqual(404);
+  });
+});
+
+//==========================================================================//
+
+describe("PATCH /users/:username/workouts/:id/exercises", function () {
+  it("works for user", async function () {
+    const workout = await db.query(
+      `SELECT id FROM workouts WHERE user_id = 'testuser1'`
+    );
+    const workoutId = workout.rows[0].id;
+
+    const exercise1 = await db.query(
+      "SELECT id FROM exercises WHERE name='Push-ups'"
+    );
+    const exercise2 = await db.query(
+      "SELECT id FROM exercises WHERE name='Sit-ups'"
+    );
+
+    const response = await request(app)
+      .patch(`/users/testuser1/workouts/${workoutId}/exercises`)
+      .send({
+        exercises: [
+          {
+            exerciseId: exercise1.rows[0].id,
+            sets: 3,
+            reps: 10,
+            weight: 0,
+          },
+          {
+            exerciseId: exercise2.rows[0].id,
+            sets: 3,
+            reps: 10,
+            weight: 0,
+          },
+        ],
+      })
+      .set("authorization", `Bearer ${testuser1Token}`);
+    expect(response.body).toEqual({
+      workoutId: `${workoutId}`,
+      exercises: [
+        {
+          exerciseId: exercise1.rows[0].id,
+          sets: 3,
+          reps: 10,
+          weight: 0,
+        },
+        {
+          exerciseId: exercise2.rows[0].id,
+          sets: 3,
+          reps: 10,
+          weight: 0,
+        },
+      ],
+    });
+  });
+
+  it("works for admin", async function () {
+    const workout = await db.query(
+      `SELECT id FROM workouts WHERE user_id = 'testuser1'`
+    );
+    const workoutId = workout.rows[0].id;
+
+    const exercise1 = await db.query(
+      "SELECT id FROM exercises WHERE name='Push-ups'"
+    );
+    const exercise2 = await db.query(
+      "SELECT id FROM exercises WHERE name='Sit-ups'"
+    );
+
+    const response = await request(app)
+      .patch(`/users/testuser1/workouts/${workoutId}/exercises`)
+      .send({
+        exercises: [
+          {
+            exerciseId: exercise1.rows[0].id,
+            sets: 3,
+            reps: 10,
+            weight: 0,
+          },
+          {
+            exerciseId: exercise2.rows[0].id,
+            sets: 3,
+            reps: 10,
+            weight: 50,
+          },
+        ],
+      })
+      .set("authorization", `Bearer ${testuser2Token}`);
+    expect(response.body).toEqual({
+      workoutId: `${workoutId}`,
+      exercises: [
+        {
+          exerciseId: exercise1.rows[0].id,
+          sets: 3,
+          reps: 10,
+          weight: 0,
+        },
+        {
+          exerciseId: exercise2.rows[0].id,
+          sets: 3,
+          reps: 10,
+          weight: 50,
+        },
+      ],
+    });
+  });
+
+  it("unauthorized for non-admin", async function () {
+    const workout = await db.query(
+      `SELECT id FROM workouts WHERE user_id = 'testuser1'`
+    );
+    const workoutId = workout.rows[0].id;
+
+    const exercise1 = await db.query(
+      "SELECT id FROM exercises WHERE name='Push-ups'"
+    );
+    const exercise2 = await db.query(
+      "SELECT id FROM exercises WHERE name='Sit-ups'"
+    );
+
+    const response = await request(app)
+      .patch(`/users/testuser2/workouts/${workoutId}/exercises`)
+      .send([
+        {
+          exerciseId: exercise1.rows[0].id,
+          sets: 3,
+          reps: 10,
+          weight: 0,
+        },
+        {
+          exerciseId: exercise2.rows[0].id,
+          sets: 3,
+          reps: 10,
+          weight: 50,
+        },
+      ])
+      .set("authorization", `Bearer ${testuser1Token}`);
+    expect(response.statusCode).toEqual(401);
+  });
+  it("throws error for invalid Schema", async function () {
+    const workout = await db.query(
+      `SELECT id FROM workouts WHERE user_id = 'testuser1'`
+    );
+    const workoutId = workout.rows[0].id;
+
+    const exercise1 = await db.query(
+      "SELECT id FROM exercises WHERE name='Push-ups'"
+    );
+    const exercise2 = await db.query(
+      "SELECT id FROM exercises WHERE name='Sit-ups'"
+    );
+
+    const response = await request(app)
+      .patch(`/users/testuser1/workouts/${workoutId}/exercises`)
+      .send({
+        exercises: [
+          {
+            exerciseId: exercise1.rows[0].id,
+            sets: 3,
+            reps: 10,
+            weight: 0,
+          },
+          {
+            exerciseId: exercise2.rows[0].id,
+            sets: 3,
+            reps: 10,
+            weight: "50",
+          },
+        ],
+      })
+      .set("authorization", `Bearer ${testuser1Token}`);
+
+    expect(response.statusCode).toEqual(400);
+  });
+});
+
+//==========================================================================//
+
+describe("DELETE /users/:username/workouts/:id", function () {
+  it("works for user", async function () {
+    const workout = await db.query(
+      `SELECT id FROM workouts WHERE user_id = 'testuser1'`
+    );
+    const workoutId = workout.rows[0].id;
+
+    const response = await request(app)
+      .delete(`/users/testuser1/workouts/${workoutId}`)
+      .set("authorization", `Bearer ${testuser1Token}`);
+    expect(response.body).toEqual({ deleted: `${workoutId}` });
+  });
+
+  it("works for admin", async function () {
+    const workout = await db.query(
+      `SELECT id FROM workouts WHERE user_id = 'testuser1'`
+    );
+    const workoutId = workout.rows[0].id;
+
+    const response = await request(app)
+      .delete(`/users/testuser1/workouts/${workoutId}`)
+      .set("authorization", `Bearer ${testuser2Token}`);
+    expect(response.body).toEqual({ deleted: `${workoutId}` });
+  });
+
+  it("unauthorized for non-admin", async function () {
+    const workout = await db.query(
+      `SELECT id FROM workouts WHERE user_id = 'testuser1'`
+    );
+    const workoutId = workout.rows[0].id;
+
+    const response = await request(app)
+      .delete(`/users/testuser2/workouts/${workoutId}`)
+      .set("authorization", `Bearer ${testuser1Token}`);
+    expect(response.statusCode).toEqual(401);
   });
 });
 

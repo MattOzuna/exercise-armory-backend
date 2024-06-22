@@ -13,6 +13,7 @@ const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
 const workoutsNewSchema = require("../schemas/workoutsNew.json");
 const workoutsUpdateSchema = require("../schemas/workoutsUpdate.json");
+const workoutsDetailsSchema = require("../schemas/workoutsDetails.json");
 
 const router = new express.Router();
 
@@ -121,20 +122,6 @@ router.delete(
 
 //==============================================================================//
 
-// GET /users/:username/workouts/:id
-// Returns a single workout found by id
-
-router.get("/:username/workouts/:id", ensureLoggedIn, ensureAdminOrUser, async function (req, res, next) {
-  try {
-    const workout = await Workouts.get(req.params.id);
-    return res.json({ workout });
-  } catch (err) {
-    return next(err);
-  }
-});
-
-//==============================================================================//
-
 // POST /users/:username/workouts
 // Adds a new workout for a user
 // Returns the newly created workout
@@ -152,7 +139,7 @@ router.post(
       }
 
       const data = { ...req.body, username: req.params.username };
-      
+
       const workout = await Workouts.create(data);
       return res.status(201).json({ workout });
     } catch (err) {
@@ -163,8 +150,28 @@ router.post(
 
 //==============================================================================//
 
+// GET /users/:username/workouts/:id
+// Returns a single workout found by id
+
+router.get(
+  "/:username/workouts/:id",
+  ensureLoggedIn,
+  ensureAdminOrUser,
+  async function (req, res, next) {
+    try {
+      const workout = await Workouts.get(req.params.id);
+      workout.date = workout.date.toISOString().split("T")[0];
+      return res.json({ workout });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+//==============================================================================//
+
 // PATCH /users/:username/workouts/:id
-// Updates a workout
+// Adds exercies and notes to a workout
 // Returns { workout: workout }
 router.patch(
   "/:username/workouts/:id",
@@ -185,5 +192,54 @@ router.patch(
     }
   }
 );
+
+//==============================================================================//
+
+// PATCH /users/:username/workouts/:id/exercises
+// Updates a workout's exercises
+// Returns {[ { exerciseId, sets, reps, weight }, ...]
+router.patch(
+  "/:username/workouts/:id/exercises",
+  ensureLoggedIn,
+  ensureAdminOrUser,
+  async function (req, res, next) {
+    try {
+      const validator = jsonschema.validate(req.body, workoutsDetailsSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
+      const workoutDetails = await Workouts.updateWorkoutExerciseDetails(
+        req.params.id,
+        req.body.exercises
+      );
+      return res.json(workoutDetails);
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+//==============================================================================//
+
+// DELETE /users/:username/workouts/:id
+// Deletes a workout
+// Returns { deleted: id }
+router.delete(
+  "/:username/workouts/:id",
+  ensureLoggedIn,
+  ensureAdminOrUser,
+  async function (req, res, next) {
+    try {
+      await Workouts.delete(req.params.id);
+      return res.json({ deleted: req.params.id });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+//==============================================================================//
 
 module.exports = router;

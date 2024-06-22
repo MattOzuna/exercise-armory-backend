@@ -1,0 +1,38 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://exercise_armory.com/workoutDetails.json",
+    "type": "object",
+    "required": [
+        "exercises"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "exercises": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "exerciseId",
+                    "weight",
+                    "reps",
+                    "sets"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                    "exerciseId": {
+                        "type": "integer"
+                    },
+                    "weight": {
+                        "type": "integer"
+                    },
+                    "reps": {
+                        "type": "integer"
+                    },
+                    "sets": {
+                        "type": "integer"
+                    }
+                }
+            }
+        }
+    }
+}
