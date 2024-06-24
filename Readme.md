@@ -1,6 +1,6 @@
 # Exercise Armory Backend
 
-This is the backend component of the Exercise Armory project. It provides the API endpoints for managing exercises.
+This is the backend component of the Exercise Armory project. It provides the API endpoints for managing exercises. THe back end was delpoyed using [Render](https://render.com/) and the database was deplotyed using [Neon Console](https://neon.tech/).
 
 ## Installation
 1. Clone the repository:
@@ -22,25 +22,35 @@ This is the backend component of the Exercise Armory project. It provides the AP
     ```
 
 ## API Endpoints
-### /exercises
-- `GET /exercises`: Get all exercises.
-- `GET /exercises/:id`: Get a specific exercise by ID.
-- `POST /exercises`: Create a new exercise.
-- `PUT /exercises/:id`: Update an existing exercise.
-- `DELETE /exercises/:id`: Delete an exercise.
+
+[Swagger Hub](https://app.swaggerhub.com/apis-docs/MOZUNA22/exercise-armory/1.0.0)
 
 ### /auth
 - `POST /auth/register`: Register a new user.
 - `POST /auth/login`: Log in an existing user.
 
-### /users
-- `GET /users`: Get all users.
-- `GET /users/:id`: Get a specific user by ID.
-- `POST /users`: Create a new user.
-- `PUT /users/:id`: Update an existing user.
-- `DELETE /users/:id`: Delete a user.
+### /exercises - Requires Authentication
+- `GET /exercises`: Get all exercises.
+- `GET /exercises/:id`: Get a specific exercise by ID.
+- `POST /exercises`: ADMIN ONLY - Create a new exercise.
+- `PUT /exercises/:id`: ADMIN ONLY - Update an existing exercise.
+- `DELETE /exercises/:id`: ADMIN ONLY - Delete an exercise.
+
+### /users - Requires Authentication
+- `GET /users`: ADMIN ONLY - Get all users.
+- `GET /users/:username`: Get a specific user by ID.
+- `POST /users`: ADMIN ONLY - Create a new user.
+- `PATCH /users/:username`: Update an existing user.
+- `DELETE /users/:username`: ADMIN ONLY - Delete a user.
+- `POST /users/:username/workouts`: Create a new workout
+- `GET /users/:username/workouts/:id`: Get a specific workout
+- `PATCH /users/:username/workouts/:id`: Add and delete exercises from workouts
+- `PATCH /users/:username/workouts/:id/exercises`: Edit weight, reps and sets for specific exercises in a workout
+- `DELETE /users/:username/workouts/:id`: delete a workout
 
 ## Technologies Used
+
 - Node.js
 - Express.js
 - Postgres
+- Bcrypt and JWT for authentication
