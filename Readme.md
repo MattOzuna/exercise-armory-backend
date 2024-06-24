@@ -1,6 +1,6 @@
 # Exercise Armory Backend
 
-This is the backend component of the Exercise Armory project. It provides the API endpoints for managing exercises. THe back end was delpoyed using [Render](https://render.com/) and the database was deplotyed using [Neon Console](https://neon.tech/).
+This is the backend component of the Exercise Armory project. It provides the API endpoints for managing exercises. The back end was delpoyed using [Render](https://render.com/) and the database was deplotyed using [Neon Console](https://neon.tech/).
 
 ## Installation
 1. Clone the repository:
@@ -23,7 +23,7 @@ This is the backend component of the Exercise Armory project. It provides the AP
 
 ## API Endpoints
 
-[Swagger Hub](https://app.swaggerhub.com/apis-docs/MOZUNA22/exercise-armory/1.0.0)
+Here is a link for more detailed API documentation [Swagger Hub](https://app.swaggerhub.com/apis-docs/MOZUNA22/exercise-armory/1.0.0)
 
 ### /auth
 - `POST /auth/register`: Register a new user.
