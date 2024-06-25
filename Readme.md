@@ -25,7 +25,7 @@ The frontend repo can be found [here](https://github.com/MattOzuna/exercise-armo
 
 ## API Endpoints
 
-Here is a link for more detailed API documentation [Swagger Hub](https://app.swaggerhub.com/apis-docs/MOZUNA22/exercise-armory/1.0.0)
+Here is a link for more detailed API documentation using [Swagger Hub](https://app.swaggerhub.com/apis-docs/MOZUNA22/exercise-armory/1.0.0)
 
 ### /auth
 - `POST /auth/register`: Register a new user.
