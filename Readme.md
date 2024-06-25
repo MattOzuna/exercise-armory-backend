@@ -1,6 +1,8 @@
 # Exercise Armory Backend
 
-This is the backend component of the Exercise Armory project. It provides the API endpoints for managing exercises. The back end was delpoyed using [Render](https://render.com/) and the database was deplotyed using [Neon Console](https://neon.tech/).
+This is the backend component of the Exercise Armory project. It provides the API endpoints for managing exercises. The backend was delpoyed using [Render](https://render.com/) and the database was deployed using [Neon Console](https://neon.tech/).
+
+The Frontend repo can be found [here](https://github.com/MattOzuna/exercise-armory-frontend).
 
 ## Installation
 1. Clone the repository:
